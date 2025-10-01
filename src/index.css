@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Light Mode - Monochromatic Blue */
+    --background: 0 0% 100%;
+    --foreground: 227 70% 19%;
+    --card: 0 0% 100%;
+    --card-foreground: 227 70% 19%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 227 70% 19%;
+    --primary: 229 68% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 227 70% 19%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 227 20% 40%;
+    --accent: 45 94% 63%;
+    --accent-foreground: 227 70% 19%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 229 68% 48%;
+    --radius: 0.5rem;
+
+    /* Custom design tokens */
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-elegant: 0 4px 12px rgba(38, 58, 209, 0.15);
+    --transition-smooth: all 0.2s ease;
+  }
+
+  .dark {
+    /* Dark Mode - Deep Jewel Tones */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 192 100% 19%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 330 56% 31%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 136 18% 30%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 192 100% 19%;
+    
+    /* Custom design tokens */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-elegant: 0 4px 16px rgba(0, 77, 97, 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .hover-lift {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+}
