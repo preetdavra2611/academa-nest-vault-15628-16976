@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { SemesterTabs } from "@/components/SemesterTabs";
 import { SubjectCard } from "@/components/SubjectCard";
+import { MaterialViewer } from "@/components/MaterialViewer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +16,8 @@ const Index = () => {
   const [materials, setMaterials] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<any>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -83,14 +86,30 @@ const Index = () => {
   const totalMaterials = materials.length;
   const totalDownloads = materials.reduce((sum, m) => sum + (m.downloads_count || 0), 0);
 
+  const handleView = (material: any) => {
+    setSelectedMaterial(material);
+    setViewerOpen(true);
+  };
+
   const handleDownload = async (material: any) => {
     try {
+      // Increment download count
       await supabase
         .from("materials")
         .update({ downloads_count: (material.downloads_count || 0) + 1 })
         .eq("id", material.id);
 
-      window.open(material.file_url, "_blank");
+      // Fetch the file and trigger download
+      const response = await fetch(material.file_url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = material.file_name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
       toast({
         title: "Download started",
@@ -102,6 +121,12 @@ const Index = () => {
         description: "Failed to download file",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleDownloadFromViewer = () => {
+    if (selectedMaterial) {
+      handleDownload(selectedMaterial);
     }
   };
 
@@ -182,12 +207,20 @@ const Index = () => {
                 key={subject.id}
                 subject={subject}
                 materials={getSubjectMaterials(subject.id)}
+                onView={handleView}
                 onDownload={handleDownload}
               />
             ))}
           </div>
         )}
       </main>
+
+      <MaterialViewer
+        open={viewerOpen}
+        onOpenChange={setViewerOpen}
+        material={selectedMaterial}
+        onDownload={handleDownloadFromViewer}
+      />
     </div>
   );
 };

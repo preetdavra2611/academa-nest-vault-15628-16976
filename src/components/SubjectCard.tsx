@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Download, Calendar } from "lucide-react";
+import { FileText, Download, Calendar, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -22,10 +22,11 @@ interface SubjectCardProps {
     code: string;
   };
   materials: Material[];
+  onView: (material: Material) => void;
   onDownload: (material: Material) => void;
 }
 
-export const SubjectCard = ({ subject, materials, onDownload }: SubjectCardProps) => {
+export const SubjectCard = ({ subject, materials, onView, onDownload }: SubjectCardProps) => {
   const regularMaterials = materials.filter((m) => m.material_type === "material");
   const pyqs = materials.filter((m) => m.material_type === "pyq");
 
@@ -57,6 +58,7 @@ export const SubjectCard = ({ subject, materials, onDownload }: SubjectCardProps
                 <MaterialItem
                   key={material.id}
                   material={material}
+                  onView={onView}
                   onDownload={onDownload}
                 />
               ))
@@ -73,6 +75,7 @@ export const SubjectCard = ({ subject, materials, onDownload }: SubjectCardProps
                 <MaterialItem
                   key={material.id}
                   material={material}
+                  onView={onView}
                   onDownload={onDownload}
                 />
               ))
@@ -86,9 +89,11 @@ export const SubjectCard = ({ subject, materials, onDownload }: SubjectCardProps
 
 const MaterialItem = ({
   material,
+  onView,
   onDownload,
 }: {
   material: Material;
+  onView: (material: Material) => void;
   onDownload: (material: Material) => void;
 }) => {
   return (
@@ -111,13 +116,21 @@ const MaterialItem = ({
           </div>
         </div>
       </div>
-      <Button
-        size="sm"
-        onClick={() => onDownload(material)}
-        className="ml-2"
-      >
-        <Download className="h-4 w-4" />
-      </Button>
+      <div className="flex gap-2 ml-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => onView(material)}
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => onDownload(material)}
+        >
+          <Download className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };
