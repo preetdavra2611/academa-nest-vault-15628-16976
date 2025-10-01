@@ -43,13 +43,15 @@ const Index = () => {
 
   const fetchInitialData = async () => {
     try {
+      console.log("Starting to fetch data...");
+      
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", session.user.id)
-          .single();
+          .maybeSingle();
         setUser(profile);
       }
 
@@ -58,12 +60,33 @@ const Index = () => {
         supabase.from("materials").select("*").order("created_at", { ascending: false }),
       ]);
 
-      if (subjectsRes.data) setSubjects(subjectsRes.data);
-      if (materialsRes.data) setMaterials(materialsRes.data);
+      console.log("Subjects response:", subjectsRes);
+      console.log("Materials response:", materialsRes);
+
+      if (subjectsRes.error) {
+        console.error("Subjects error:", subjectsRes.error);
+        throw subjectsRes.error;
+      }
+      
+      if (materialsRes.error) {
+        console.error("Materials error:", materialsRes.error);
+        throw materialsRes.error;
+      }
+
+      if (subjectsRes.data) {
+        console.log("Setting subjects:", subjectsRes.data.length);
+        setSubjects(subjectsRes.data);
+      }
+      
+      if (materialsRes.data) {
+        console.log("Setting materials:", materialsRes.data.length);
+        setMaterials(materialsRes.data);
+      }
     } catch (error: any) {
+      console.error("Fetch error:", error);
       toast({
         title: "Error",
-        description: "Failed to load data. Please refresh the page.",
+        description: error.message || "Failed to load data. Please refresh the page.",
         variant: "destructive",
       });
     } finally {
