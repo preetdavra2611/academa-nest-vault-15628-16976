@@ -44,7 +44,7 @@ const Index = () => {
 
   const fetchInitialData = async () => {
     try {
-      console.log("Starting to fetch data...");
+      console.log("🔄 Starting data fetch...");
       
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
@@ -61,36 +61,46 @@ const Index = () => {
         supabase.from("materials").select("*").order("created_at", { ascending: false }),
       ]);
 
-      console.log("Subjects response:", subjectsRes);
-      console.log("Materials response:", materialsRes);
+      console.log("📚 Subjects response:", subjectsRes);
+      console.log("📄 Materials response:", materialsRes);
 
       if (subjectsRes.error) {
-        console.error("Subjects error:", subjectsRes.error);
+        console.error("❌ Subjects error:", subjectsRes.error);
         throw subjectsRes.error;
       }
       
       if (materialsRes.error) {
-        console.error("Materials error:", materialsRes.error);
+        console.error("❌ Materials error:", materialsRes.error);
         throw materialsRes.error;
       }
 
       if (subjectsRes.data) {
-        console.log("Setting subjects:", subjectsRes.data.length);
+        console.log("✅ Setting subjects count:", subjectsRes.data.length);
+        console.log("📋 Subjects data:", subjectsRes.data);
         setSubjects(subjectsRes.data);
+      } else {
+        console.warn("⚠️ No subjects data received");
+        setSubjects([]);
       }
       
       if (materialsRes.data) {
-        console.log("Setting materials:", materialsRes.data.length);
+        console.log("✅ Setting materials count:", materialsRes.data.length);
         setMaterials(materialsRes.data);
+      } else {
+        console.warn("⚠️ No materials data received");
+        setMaterials([]);
       }
+      
+      console.log("✅ Data fetch complete");
     } catch (error: any) {
-      console.error("Fetch error:", error);
+      console.error("❌ Fatal fetch error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to load data. Please refresh the page.",
         variant: "destructive",
       });
     } finally {
+      console.log("🏁 Setting loading to false");
       setLoading(false);
     }
   };
@@ -102,6 +112,13 @@ const Index = () => {
         subject.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         subject.code.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+  
+  console.log("🔍 Filter state:", { 
+    totalSubjects: subjects.length, 
+    selectedSemester, 
+    searchQuery,
+    filteredCount: filteredSubjects.length 
+  });
 
   const getSubjectMaterials = (subjectId: string) => {
     return materials.filter((m) => m.subject_id === subjectId);
