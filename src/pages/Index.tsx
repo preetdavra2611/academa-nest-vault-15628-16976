@@ -3,11 +3,12 @@ import { Navigation } from "@/components/Navigation";
 import { SemesterTabs } from "@/components/SemesterTabs";
 import { SubjectCard } from "@/components/SubjectCard";
 import { MaterialViewer } from "@/components/MaterialViewer";
+import { FeatureBadges } from "@/components/FeatureBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Search, Lightbulb, Users, Clock } from "lucide-react";
+import { Search } from "lucide-react";
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
@@ -170,21 +171,8 @@ const Index = () => {
             Browse comprehensive study materials, notes, and past year questions organized by semester for efficient learning.
           </p>
 
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 mb-12">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Lightbulb className="h-5 w-5 text-accent" />
-              <span>Quality Resources</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Users className="h-5 w-5 text-primary" />
-              <span>{totalMaterials}+ Materials</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="h-5 w-5 text-secondary" />
-              <span>Frequently Updated</span>
-            </div>
-          </div>
+          {/* Feature Badges */}
+          <FeatureBadges />
 
           {/* Semester Tabs */}
           <SemesterTabs
